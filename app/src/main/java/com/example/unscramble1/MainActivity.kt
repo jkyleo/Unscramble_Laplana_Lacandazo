@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import com.example.unscramble1.ui.theme.Unscramble1Theme
 
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,8 +35,39 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GameScreen() {
 
+    // Stores the answer typed by the user
     var userAnswer by remember {
         mutableStateOf("")
+    }
+
+    // List of words
+    val words: List<String> = listOf(
+        "CAT",
+        "DOG",
+        "BOOK"
+    )
+
+    // Keeps track of the current word
+    var currentWordIndex by remember {
+        mutableStateOf(0)
+    }
+
+    // Gets the correct answer
+    val correctAnswer: String = words[currentWordIndex]
+
+    // Creates the first scrambled word
+    var scrambledWord by remember {
+        mutableStateOf(
+            words[0]
+                .toList()
+                .shuffled()
+                .joinToString("")
+        )
+    }
+
+    // Stores the player's score
+    var score by remember {
+        mutableStateOf(0)
     }
 
     Column(
@@ -50,7 +82,7 @@ fun GameScreen() {
         )
 
         Text(
-            text = "TAC",
+            text = scrambledWord,
             fontSize = 40.sp
         )
 
@@ -70,14 +102,36 @@ fun GameScreen() {
 
         Button(
             onClick = {
-                // Nothing happens yet
+
+                // Check the user's answer
+                if (userAnswer.uppercase() == correctAnswer) {
+
+                    // Increase score
+                    score++
+
+                    // Check if another word is available
+                    if (currentWordIndex < words.size - 1) {
+
+                        // Move to the next word
+                        currentWordIndex++
+
+                        // Clear the TextField
+                        userAnswer = ""
+
+                        // Scramble the next word
+                        scrambledWord = words[currentWordIndex]
+                            .toList()
+                            .shuffled()
+                            .joinToString("")
+                    }
+                }
             }
         ) {
             Text("SUBMIT")
         }
 
         Text(
-            text = "Score: 0"
+            text = "Score: $score"
         )
     }
 }
