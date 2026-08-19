@@ -35,35 +35,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun GameScreen() {
 
-    // Stores the answer typed by the user
+    // Stores the answer entered by the user
     var userAnswer by remember {
         mutableStateOf("")
     }
 
-    // List of words
-    val words: List<String> = listOf(
-        "CAT",
-        "DOG",
-        "BOOK"
-    )
-
-    // Keeps track of the current word
-    var currentWordIndex by remember {
-        mutableStateOf(0)
-    }
-
-    // Gets the correct answer
-    val correctAnswer: String = words[currentWordIndex]
-
-    // Creates the first scrambled word
-    var scrambledWord by remember {
-        mutableStateOf(
-            words[0]
-                .toList()
-                .shuffled()
-                .joinToString("")
-        )
-    }
+    // The correct answer
+    val correctAnswer = "CAT"
 
     // Stores the player's score
     var score by remember {
@@ -76,20 +54,24 @@ fun GameScreen() {
         verticalArrangement = Arrangement.Center
     ) {
 
+        // Game title
         Text(
             text = "UNSCRAMBLE",
             fontSize = 30.sp
         )
 
+        // Scrambled word
         Text(
-            text = scrambledWord,
+            text = "TAC",
             fontSize = 40.sp
         )
 
+        // Instruction
         Text(
             text = "Unscramble the word!"
         )
 
+        // User input
         OutlinedTextField(
             value = userAnswer,
             onValueChange = {
@@ -100,36 +82,22 @@ fun GameScreen() {
             }
         )
 
+        // Submit button
         Button(
             onClick = {
 
-                // Check the user's answer
+                // Check if the answer is correct
                 if (userAnswer.uppercase() == correctAnswer) {
 
-                    // Increase score
+                    // Increase the score
                     score++
-
-                    // Check if another word is available
-                    if (currentWordIndex < words.size - 1) {
-
-                        // Move to the next word
-                        currentWordIndex++
-
-                        // Clear the TextField
-                        userAnswer = ""
-
-                        // Scramble the next word
-                        scrambledWord = words[currentWordIndex]
-                            .toList()
-                            .shuffled()
-                            .joinToString("")
-                    }
                 }
             }
         ) {
             Text("SUBMIT")
         }
 
+        // Display the current score
         Text(
             text = "Score: $score"
         )
