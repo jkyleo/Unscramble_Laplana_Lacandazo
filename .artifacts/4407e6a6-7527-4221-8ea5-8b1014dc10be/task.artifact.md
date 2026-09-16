@@ -1,0 +1,4 @@
+- `[x]` Update `libs.versions.toml` with `lifecycle-viewmodel-compose`
+- `[x]` Update `app/build.gradle.kts` to `compileSdk 37` and add the dependency
+- `[x]` Update `GameViewModel.kt` to use Compose state (`mutableStateOf`)
+- `[x]` Verify the build and fixes
