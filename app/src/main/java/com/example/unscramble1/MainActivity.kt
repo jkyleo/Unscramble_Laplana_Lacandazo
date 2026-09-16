@@ -7,84 +7,71 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.unscramble1.ui.theme.Unscramble1Theme
 
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContent {
-            Unscramble1Theme {
+            MaterialTheme {
                 GameScreen()
             }
         }
     }
 }
 
-@Composable
-fun GameScreen() {
+@androidx.compose.runtime.Composable
+fun GameScreen(
+    viewModel: GameViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
 
-    // Get the ViewModel
-    val viewModel: GameViewModel = viewModel()
-
-    // Get the current correct answer
-    val correctAnswer =
-        viewModel.words[viewModel.currentWordIndex]
-
-    // Display the game UI
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-
         Text(
-            text = "UNSCRAMBLE",
-            fontSize = 30.sp
-        )
-
-        // Display the current word
-        Text(
-            text = correctAnswer,
-            fontSize = 40.sp
+            text = "Unscramble",
+            style = MaterialTheme.typography.headlineMedium
         )
 
         Text(
-            text = "Unscramble the word!"
+            text = "Word: ${uiState.currentWord}",
+            modifier = Modifier.padding(top = 16.dp)
         )
 
-        // Read the answer from the ViewModel
+        Text(
+            text = "Score: ${uiState.score}",
+            modifier = Modifier.padding(top = 8.dp)
+        )
+
+
         OutlinedTextField(
-            value = viewModel.userAnswer,
-            onValueChange = {
-                viewModel.userAnswer = it
-            },
-            label = {
-                Text("Enter your answer")
-            }
+            value = uiState.userAnswer,
+            onValueChange = { viewModel.updateUserAnswer(it) },
+            label = { Text("Your answer") },
+            modifier = Modifier.padding(top = 16.dp)
         )
 
         Button(
-            onClick = {
-                // Game logic will be moved
-                // into the ViewModel in a later phase.
-            }
+            onClick = {},
+            modifier = Modifier.padding(top = 16.dp)
         ) {
-            Text("SUBMIT")
+            Text("Submit")
         }
-
-        // Display the ViewModel score
-        Text(
-            text = "Score: ${viewModel.score}"
-        )
     }
 }

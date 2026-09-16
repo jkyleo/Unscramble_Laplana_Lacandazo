@@ -1,27 +1,28 @@
 
 package com.example.unscramble1
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class GameViewModel : ViewModel() {
 
-    // List of game words
-    val words: List<String> = listOf(
-        "CAT",
-        "DOG",
-        "BOOK"
+    private val words: List<String> = listOf("CAT", "DOG", "BOOK")
+
+    private var currentWordIndex = 0
+
+    private val _uiState = MutableStateFlow(
+        GameUiState(
+            currentWord = words[currentWordIndex]
+        )
     )
 
-    // Current word position
-    var currentWordIndex by mutableIntStateOf(0)
+    val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
-    // Player's score
-    var score by mutableIntStateOf(0)
-
-    // Answer entered by the player
-    var userAnswer by mutableStateOf("")
+    fun updateUserAnswer(answer: String) {
+        _uiState.value = _uiState.value.copy(
+            userAnswer = answer
+        )
+    }
 }
